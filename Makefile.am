@@ -204,6 +204,7 @@ libcoap_@LIBCOAP_NAME_SUFFIX@_la_SOURCES = \
   src/coap_netif.c \
   src/coap_notls.c \
   src/coap_openssl.c \
+  src/coap_wolfssl.c \
   src/coap_option.c \
   src/coap_oscore.c \
   src/coap_pdu.c \

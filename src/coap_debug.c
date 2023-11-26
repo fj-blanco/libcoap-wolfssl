@@ -1136,6 +1136,14 @@ coap_string_tls_version(char *buffer, size_t bufsize) {
              (unsigned long)((tls_version->built_version >> 12) & 0xff),
              b_sub, b_beta);
     break;
+  case COAP_TLS_LIBRARY_WOLFSSL:
+  snprintf(buffer, bufsize, "TLS Library: WolfSSL - runtime %lu.%lu.%lu, "
+           "libcoap built for %lx", 
+           (unsigned long)(tls_version->version >> 16),
+           (unsigned long)((tls_version->version >> 8) & 0xff),
+           (unsigned long)(tls_version->version & 0xff),
+           tls_version->built_version);
+    break;
   case COAP_TLS_LIBRARY_GNUTLS:
     snprintf(buffer, bufsize, "TLS Library: GnuTLS - runtime %lu.%lu.%lu, "
              "libcoap built for %lu.%lu.%lu",
