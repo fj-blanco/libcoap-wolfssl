@@ -1,12 +1,29 @@
-# Building libcoap with wolfSSL
+# libcoap wolfSSL integration
 
-## Building wolfSSL for libcoap
+## TODO list
+
+- [ ] Set parameters at the `WOLFSSL *ssl` (as in the OpenSSL implementation) level insted of `WOLFSSL_CTX *ctx`. Provisionally I have used `wolfSSL_CTX_set1_param(ctx, param);` but this probably impacts functionality.
+- [ ] Properly set version dependance. For example `wolfSSL_dtls13_allow_ch_frag` is a recent addtion to wolfSSL.
+- Properly deal with hardcoded parameters `IS_DTLS13`, `HRR_COOKIE` and `USE_SECURE_RENEGOTIATION`.
+- [ ] Check impact of missing cases in `coap_dgram_ctrl()`.
+- [ ] Implement `COAP_PKI_KEY_PKCS11` case in `setup_pki_server()` and `setup_pki_ssl` if possible.
+- [ ] Test if session ressumption and 0-RTT work.
+
+## Building libcoap with wolfSSL
+
+#3# Building wolfSSL for libcoap
 
 If you want to enable PQ cryptography in wolfSSL, you first need to build **liboqs**. You can use the `install_liboqs_for_wolfssl.sh` script as a reference.
 
 Then you can use `install_wolfssl.sh` to build wolfSSL with liboqs.
 
-## Building libcoap
+### Building libcoap
+
+Right now this has been tested in **Ubuntu 22.04.3 LTS** and **Debian 11**. Yoy may need to install these dependences
+
+```bash
+sudo apt-get install autoconf-archive libwolfssl-dev libcunit1-dev pkg-config
+```
 
 ```bash
 cd libcoap-wolfssl
@@ -34,11 +51,11 @@ CPPFLAGS="-DCOAP_WOLFSSL_GROUPS=\"\\\"KYBER_LEVEL3\\\"\"" \
 ./configure --enable-dtls --with-wolfssl --disable-manpages --disable-doxygen --enable-tests
 ```
 
-## Testing wolfSSL integration with libcoap
+### Testing wolfSSL integration with libcoap
 
 Note: I have defined the macro `HRR_COOKIE` in the file `src/coap_wolfssl.c` to enable the HelloRetryRequest cookie.
 
-### Testing with default groups
+#### Testing with default groups
 
 Generate certificates
 
@@ -63,7 +80,7 @@ Check on port 5684.
 
 It works in both `#define HRR_COOKIE 1` and `#define HRR_COOKIE 0` modes.
 
-### Certificate and key in same file
+#### Certificate and key in same file
 
 Generate certificates
 
@@ -98,7 +115,7 @@ Run client:
 ./libcoap/examples/coap-client -m get coaps://[::1]/
 ```
 
-### Testing with PQ KEMs
+#### Testing with PQ KEMs
 
 Build libcoap specifying the `COAP_WOLFSSL_GROUPS` macro with the desired PQ KEMs. For example, for `KYBER_LEVEL1`:
 
@@ -121,7 +138,7 @@ Client-side
 
 I have tried `KYBER_LEVEL3` and `KYBER_LEVEL5`. I have tried all in both modes `#define HRR_COOKIE 1` and `#define HRR_COOKIE 0`. `KYBER_LEVEL3` and `KYBER_LEVEL5` doesn't work with the later, but this also happens with wolfSSL's sample server and client in isolated DTLS 1.3 handshake.
 
-### Testing with PQ signatures
+#### Testing with PQ signatures
 
 Generate certificates (see [here](https://github.com/wolfSSL/osp/tree/master/oqs)).
 
@@ -139,7 +156,7 @@ and the client
 
 I have tested this with `falcon_level1` and `falcon_level1` sucessfully as well.
 
-### PSK mode
+#### PSK mode
 
 PSK Mode
 Generate Pre-Shared Key:
@@ -160,7 +177,7 @@ Run Client in PSK Mode:
 ./libcoap/examples/coap-client -m get -k $(cat psk.txt) -u myHint coaps://[::1]/
 ```
 
-## Running `testdriver` tests
+### Running `testdriver` tests
 
 Build libcoap with the `--enable-tests` option and run
 
@@ -168,7 +185,7 @@ Build libcoap with the `--enable-tests` option and run
 ./libcoap/tests/testdriver
 ```
 
-## Analyzing the traffic with Wireshark with PQ support
+### Analyzing the traffic with Wireshark with PQ support
 
 See [OQS-wireshark](https://github.com/open-quantum-safe/oqs-demos/blob/main/wireshark/USAGE.md) for more details. Perhaps you need to run
 

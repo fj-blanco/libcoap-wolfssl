@@ -784,7 +784,7 @@ coap_set_user_prefs(WOLFSSL_CTX *ctx) {
   ret = wolfSSL_CTX_set1_groups_list(ctx,
                                      (char *) COAP_WOLFSSL_GROUPS);
   if (ret != WOLFSSL_SUCCESS) {
-    printf("Failed to set group list\n");
+    coap_log_debug("Failed to set group list\n");
   }
 #endif
 }
@@ -2159,9 +2159,8 @@ coap_dtls_new_server_session(coap_session_t *session) {
 
 #ifdef WOLFSSL_DTLS_CH_FRAG
 #ifdef IS_DTLS13
-  printf("HERE SHOULD BE THE CALL TO wolfSSL_dtls13_allow_ch_frag()\n");
   if (wolfSSL_dtls13_allow_ch_frag(ssl, 1) != WOLFSSL_SUCCESS) {
-    printf("Error: wolfSSL_dtls13_allow_ch_frag failed\n");
+    coap_log_debug("Error: wolfSSL_dtls13_allow_ch_frag failed\n");
   }
 #endif
 #endif
