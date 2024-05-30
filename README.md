@@ -9,6 +9,11 @@
 
 Copyright (C) 2010—2023 by Olaf Bergmann <bergmann@tzi.org> and others
 
+ABOUT THIS FORK
+=============
+
+This fork integrates wolfSSL into libcoap for experimenting with Post-Quantum Cryptography. Ideas from this fork have been incorporated into the official wolfSSL integration in libcoap (see [PR #1358](https://github.com/obgm/libcoap/pull/1358)), so we recommend using that instead.
+
 ABOUT LIBCOAP
 =============
 
